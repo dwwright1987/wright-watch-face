@@ -1,9 +1,3 @@
 # Jetbrains
 *.iml
 .idea/*
-
-# Build Files
-**/target/*
-
-# Derby File
-derby.log
