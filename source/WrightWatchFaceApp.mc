@@ -1,6 +1,6 @@
 using Toybox.Application as App;
 
-class Wright-watch-faceApp extends App.AppBase {
+class WrightWatchFaceApp extends App.AppBase {
 
     function initialize() {
         AppBase.initialize();
@@ -16,7 +16,7 @@ class Wright-watch-faceApp extends App.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() {
-        return [ new Wright-watch-faceView() ];
+        return [ new WrightWatchFaceView() ];
     }
 
 }

@@ -3,7 +3,7 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 
-class Wright-watch-faceView extends Ui.WatchFace {
+class WrightWatchFaceView extends Ui.WatchFace {
 
     function initialize() {
         WatchFace.initialize();
