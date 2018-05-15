@@ -8,6 +8,7 @@ class WrightWatchFaceView extends Ui.WatchFace {
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
     const MIN_24_HOUR_HOURS = 00;
+    var currentHour;
 //    var displayHour;
 //    var displayMinute;
 //    var displaySecond;
@@ -72,14 +73,7 @@ class WrightWatchFaceView extends Ui.WatchFace {
 //        dc.drawText(_x,  y, font, value, justification);
 //        dc.drawText(_xf, y, fontFraction,    fract, justification);
 
-        var second = Sys.getClockTime().sec.format("%02d");
-
-//        setClip(x, y, width, height) ⇒ Object
-        dc.setClip(124, 101, 20, 35);
-//         setColor(foreground, background) ⇒ Object
-        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
-//        dc.drawText(x, y, font, text, justification)
-        dc.drawText(124, 101, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
+        updateSeconds(dc);
     }
 
     // Update the view
@@ -100,16 +94,16 @@ class WrightWatchFaceView extends Ui.WatchFace {
         var clockTime = Sys.getClockTime();
         var is24Hour = Sys.getDeviceSettings().is24Hour;
 
-        var hour = clockTime.hour;
+        currentHour = clockTime.hour;
         var hoursBucket = "";
         if (!Sys.getDeviceSettings().is24Hour) {
-            if (hour == MAX_12_HOUR_HOURS) {
+            if (currentHour == MAX_12_HOUR_HOURS) {
                 hoursBucket = PM_HOURS_BUCKET;
-            } else if (hour > MAX_12_HOUR_HOURS) {
-                hour = hour - MAX_12_HOUR_HOURS;
+            } else if (currentHour > MAX_12_HOUR_HOURS) {
+                currentHour = currentHour - MAX_12_HOUR_HOURS;
                 hoursBucket = PM_HOURS_BUCKET;
-            } else if (hour == MIN_24_HOUR_HOURS) {
-                hour = MAX_12_HOUR_HOURS;
+            } else if (currentHour == MIN_24_HOUR_HOURS) {
+                currentHour = MAX_12_HOUR_HOURS;
                 hoursBucket = AM_HOURS_BUCKET;
             } else {
                 hoursBucket = AM_HOURS_BUCKET;
@@ -117,9 +111,9 @@ class WrightWatchFaceView extends Ui.WatchFace {
         }
 
         var minute = clockTime.min.format("%02d");
-        var secondsPlaceholder = "00 ";
+        var seconds = clockTime.sec.format("%02d");
 
-        var timeString = Lang.format("$1$:$2$:$3$", [hour, minute, secondsPlaceholder]);
+        var timeString = Lang.format("$1$:$2$:$3$", [currentHour, minute, seconds]);
         if (!is24Hour) {
             timeString = Lang.format("$1$ $2$", [timeString, hoursBucket]);
         }
@@ -131,6 +125,22 @@ class WrightWatchFaceView extends Ui.WatchFace {
         View.onUpdate(dc);
 
 //        updateTimeLabel();
+    }
+
+    function updateSeconds(dc) {
+        var textLocationY = 101;
+        var textLocationX = 127;
+
+        var clipHeight = 35;
+        var clipWidth = 35;
+        var clipX = textLocationX - 16;
+        var clipY = textLocationY;
+
+        dc.setClip(clipX, clipY, clipWidth, clipHeight);
+        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
+
+        var second = Sys.getClockTime().sec.format("%02d");
+        dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
     }
 
 //    function updateTimeLabel() {
