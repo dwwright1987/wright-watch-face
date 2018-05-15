@@ -2,17 +2,19 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
+using Toybox.Math;
 
 class WrightWatchFaceView extends Ui.WatchFace {
     const AM_HOURS_BUCKET = "AM";
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
     const MIN_24_HOUR_HOURS = 00;
-    var currentHour;
+//    var timeLabelWidth;
 //    var displayHour;
 //    var displayMinute;
 //    var displaySecond;
 //    var displayHoursBucket;
+    var secondsLocX;
 
     function initialize() {
         WatchFace.initialize();
@@ -91,19 +93,21 @@ class WrightWatchFaceView extends Ui.WatchFace {
 //
 //        var clockTime = Sys.getClockTime();
 
+        dc.clearClip();
+
         var clockTime = Sys.getClockTime();
         var is24Hour = Sys.getDeviceSettings().is24Hour;
 
-        currentHour = clockTime.hour;
+        var hour = clockTime.hour;
         var hoursBucket = "";
         if (!Sys.getDeviceSettings().is24Hour) {
-            if (currentHour == MAX_12_HOUR_HOURS) {
+            if (hour == MAX_12_HOUR_HOURS) {
                 hoursBucket = PM_HOURS_BUCKET;
-            } else if (currentHour > MAX_12_HOUR_HOURS) {
-                currentHour = currentHour - MAX_12_HOUR_HOURS;
+            } else if (hour > MAX_12_HOUR_HOURS) {
+                hour = hour - MAX_12_HOUR_HOURS;
                 hoursBucket = PM_HOURS_BUCKET;
-            } else if (currentHour == MIN_24_HOUR_HOURS) {
-                currentHour = MAX_12_HOUR_HOURS;
+            } else if (hour == MIN_24_HOUR_HOURS) {
+                hour = MAX_12_HOUR_HOURS;
                 hoursBucket = AM_HOURS_BUCKET;
             } else {
                 hoursBucket = AM_HOURS_BUCKET;
@@ -113,23 +117,39 @@ class WrightWatchFaceView extends Ui.WatchFace {
         var minute = clockTime.min.format("%02d");
         var seconds = clockTime.sec.format("%02d");
 
-        var timeString = Lang.format("$1$:$2$:$3$", [currentHour, minute, seconds]);
+        var timeString = Lang.format("$1$:$2$:$3$", [hour, minute, seconds]);
         if (!is24Hour) {
             timeString = Lang.format("$1$ $2$", [timeString, hoursBucket]);
         }
 
-        var view = View.findDrawableById("TimeLabel");
-        view.setText(timeString);
+        var timeLabelDrawable = View.findDrawableById("TimeLabel");
+        timeLabelDrawable.setText(timeString);
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+
+//        secondsLocX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0) - 70;
+        secondsLocX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
+        if (hoursBucket == PM_HOURS_BUCKET) {
+            secondsLocX -= 70;
+        } else {
+            secondsLocX -= 72;
+        }
+
+//        timeLabelWidth = timeLabelDrawable.width;
+
+//        Sys.println("timeLabelWidth = " + timeLabelWidth);
+//        Sys.println("timeLabelDrawable x loc = " + timeLabelDrawable.locX);
 
 //        updateTimeLabel();
     }
 
     function updateSeconds(dc) {
+//        var textLocationX = calculateSecondsLocationX();
+        var textLocationX = secondsLocX;
         var textLocationY = 101;
-        var textLocationX = 127;
+
+//        Sys.println("textLocationX = " + textLocationX);
 
         var clipHeight = 35;
         var clipWidth = 35;
@@ -141,6 +161,52 @@ class WrightWatchFaceView extends Ui.WatchFace {
 
         var second = Sys.getClockTime().sec.format("%02d");
         dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
+    }
+
+    function calculateSecondsLocationX() {
+//        var textLocationX;
+//
+//        switch (currentHour) {
+//            case 1:
+//                textLocationX = 126;
+//                break;
+//            case 2:
+//                textLocationX = 126;
+//                break;
+//            case 3:
+//                textLocationX = 126;
+//                break;
+//            case 4:
+//                textLocationX = 126;
+//                break;
+//            case 5:
+//                textLocationX = 126;
+//                break;
+//            case 6:
+//                textLocationX = 126;
+//                break;
+//            case 7:
+//                textLocationX = 127;
+//                break;
+//            case 8:
+//                textLocationX = 127;
+//                break;
+//            case 9:
+//                textLocationX = 127;
+//                break;
+//            case 10:
+//                textLocationX = 127;
+//                break;
+//            case 11:
+//                textLocationX = 127;
+//                break;
+//            default:
+//                textLocationX = 127;
+//                break;
+//        }
+//
+//        return textLocationX;
+        return timeLabelWidth - 27;
     }
 
 //    function updateTimeLabel() {
