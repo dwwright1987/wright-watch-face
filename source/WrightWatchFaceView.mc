@@ -81,11 +81,20 @@ class WrightWatchFaceView extends Ui.WatchFace {
     }
 
     function updateBatteryPercentage() {
-        var battery = System.getSystemStats().battery.format("%.0d");
-        var batteryPercentage = Lang.format("$1$%", [battery]);
+        var battery = System.getSystemStats().battery;
+        var formmattedBattery = battery.format("%.0d");
+        var batteryPercentage = Lang.format("$1$%", [formmattedBattery]);
 
-        var timeLabelDrawable = View.findDrawableById("BatteryPercentage");
-        timeLabelDrawable.setText(batteryPercentage);
+        var batteryPercentageDrawable = View.findDrawableById("BatteryPercentage");
+        batteryPercentageDrawable.setText(batteryPercentage);
+
+        if (battery <= 15) {
+            batteryPercentageDrawable.setColor(Gfx.COLOR_RED);
+        } else if (battery <= 30) {
+            batteryPercentageDrawable.setColor(Gfx.COLOR_YELLOW);
+        } else {
+            batteryPercentageDrawable.setColor(Gfx.COLOR_GREEN);
+        }
     }
 
     function updateSeconds(dc) {
