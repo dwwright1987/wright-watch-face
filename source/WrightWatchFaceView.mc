@@ -9,6 +9,7 @@ class WrightWatchFaceView extends Ui.WatchFace {
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
     const MIN_24_HOUR_HOURS = 00;
+    var hoursBucket;
     var secondsLocX;
 
     function initialize() {
@@ -26,11 +27,19 @@ class WrightWatchFaceView extends Ui.WatchFace {
     function onUpdate(dc) {
         dc.clearClip();
 
+        var timeLabelDrawable = updateTime(dc);
+
+        View.onUpdate(dc);
+
+        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
+    }
+
+    function updateTime(dc) {
         var clockTime = Sys.getClockTime();
         var is24Hour = Sys.getDeviceSettings().is24Hour;
 
         var hour = clockTime.hour;
-        var hoursBucket = "";
+        hoursBucket = "";
         if (!Sys.getDeviceSettings().is24Hour) {
             if (hour == MAX_12_HOUR_HOURS) {
                 hoursBucket = PM_HOURS_BUCKET;
@@ -56,9 +65,18 @@ class WrightWatchFaceView extends Ui.WatchFace {
         var timeLabelDrawable = View.findDrawableById("TimeLabel");
         timeLabelDrawable.setText(timeString);
 
-        View.onUpdate(dc);
+        return timeLabelDrawable;
+    }
 
-        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
+    function calculateSecondsLocationX(timeLabelDrawable, hoursBucket) {
+        var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
+        if (hoursBucket == PM_HOURS_BUCKET) {
+            secondsLococationX -= 70;
+        } else {
+            secondsLococationX -= 72;
+        }
+
+        return secondsLococationX;
     }
 
     function updateSeconds(dc) {
@@ -77,14 +95,4 @@ class WrightWatchFaceView extends Ui.WatchFace {
         dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
     }
 
-    function calculateSecondsLocationX(timeLabelDrawable, hoursBucket) {
-        var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
-        if (hoursBucket == PM_HOURS_BUCKET) {
-            secondsLococationX -= 70;
-        } else {
-            secondsLococationX -= 72;
-        }
-
-        return secondsLococationX;
-    }
 }
