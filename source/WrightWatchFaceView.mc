@@ -1,10 +1,12 @@
-using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
-using Toybox.System as Sys;
-using Toybox.Lang as Lang;
 using Toybox.Math;
+using Toybox.Lang;
+using Toybox.System;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.WatchUi;
 
-class WrightWatchFaceView extends Ui.WatchFace {
+class WrightWatchFaceView extends WatchUi.WatchFace {
     const AM_HOURS_BUCKET = "AM";
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
@@ -28,6 +30,7 @@ class WrightWatchFaceView extends Ui.WatchFace {
         dc.clearClip();
 
         var timeLabelDrawable = updateTime();
+        updateDate();
         updateBatteryPercentage();
 
         View.onUpdate(dc);
@@ -36,12 +39,12 @@ class WrightWatchFaceView extends Ui.WatchFace {
     }
 
     function updateTime() {
-        var clockTime = Sys.getClockTime();
-        var is24Hour = Sys.getDeviceSettings().is24Hour;
+        var clockTime = System.getClockTime();
+        var is24Hour = System.getDeviceSettings().is24Hour;
 
         var hour = clockTime.hour;
         hoursBucket = "";
-        if (!Sys.getDeviceSettings().is24Hour) {
+        if (!System.getDeviceSettings().is24Hour) {
             if (hour == MAX_12_HOUR_HOURS) {
                 hoursBucket = PM_HOURS_BUCKET;
             } else if (hour > MAX_12_HOUR_HOURS) {
@@ -80,6 +83,14 @@ class WrightWatchFaceView extends Ui.WatchFace {
         return secondsLococationX;
     }
 
+    function updateDate() {
+        var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+        var formattedDate = Lang.format("$1$ $2$, $3$", [today.month, today.day, today.year]);
+
+        var dateLabelDrawable = View.findDrawableById("DateLabel");
+        dateLabelDrawable.setText(formattedDate);
+    }
+
     function updateBatteryPercentage() {
         var battery = System.getSystemStats().battery;
         var formmattedBattery = battery.format("%.0d");
@@ -109,7 +120,7 @@ class WrightWatchFaceView extends Ui.WatchFace {
         dc.setClip(clipX, clipY, clipWidth, clipHeight);
         dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
 
-        var second = Sys.getClockTime().sec.format("%02d");
+        var second = System.getClockTime().sec.format("%02d");
         dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
     }
 }
