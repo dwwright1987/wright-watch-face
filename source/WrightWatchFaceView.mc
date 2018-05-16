@@ -27,14 +27,15 @@ class WrightWatchFaceView extends Ui.WatchFace {
     function onUpdate(dc) {
         dc.clearClip();
 
-        var timeLabelDrawable = updateTime(dc);
+        var timeLabelDrawable = updateTime();
+        updateBatteryPercentage();
 
         View.onUpdate(dc);
 
         secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
     }
 
-    function updateTime(dc) {
+    function updateTime() {
         var clockTime = Sys.getClockTime();
         var is24Hour = Sys.getDeviceSettings().is24Hour;
 
@@ -57,13 +58,13 @@ class WrightWatchFaceView extends Ui.WatchFace {
         var minute = clockTime.min.format("%02d");
         var seconds = clockTime.sec.format("%02d");
 
-        var timeString = Lang.format("$1$:$2$:$3$", [hour, minute, seconds]);
+        var time = Lang.format("$1$:$2$:$3$", [hour, minute, seconds]);
         if (!is24Hour) {
-            timeString = Lang.format("$1$ $2$", [timeString, hoursBucket]);
+            time = Lang.format("$1$ $2$", [time, hoursBucket]);
         }
 
         var timeLabelDrawable = View.findDrawableById("TimeLabel");
-        timeLabelDrawable.setText(timeString);
+        timeLabelDrawable.setText(time);
 
         return timeLabelDrawable;
     }
@@ -77,6 +78,14 @@ class WrightWatchFaceView extends Ui.WatchFace {
         }
 
         return secondsLococationX;
+    }
+
+    function updateBatteryPercentage() {
+        var battery = System.getSystemStats().battery.format("%.0d");
+        var batteryPercentage = Lang.format("$1$%", [battery]);
+
+        var timeLabelDrawable = View.findDrawableById("BatteryPercentage");
+        timeLabelDrawable.setText(batteryPercentage);
     }
 
     function updateSeconds(dc) {
@@ -94,5 +103,4 @@ class WrightWatchFaceView extends Ui.WatchFace {
         var second = Sys.getClockTime().sec.format("%02d");
         dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
     }
-
 }
