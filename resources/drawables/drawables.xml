@@ -1,18 +1,3 @@
-<!--<drawables>-->
-    <!--<bitmap id="LauncherIcon" filename="launcher_icon.png" />-->
-<!--</drawables>-->
-
-<!--<resources>-->
-    <!--&lt;!&ndash;<drawable-list id="Smiley" background="Gfx.COLOR_YELLOW">&ndash;&gt;-->
-        <!--&lt;!&ndash;<shape type="circle" x="10" y="10" radius="5" color="Gfx.COLOR_BLACK" />&ndash;&gt;-->
-        <!--&lt;!&ndash;<shape type="circle" x="30" y="10" radius="5" color="Gfx.COLOR_BLACK" />&ndash;&gt;-->
-        <!--&lt;!&ndash;<bitmap id="mouth" x="15" y="25" filename="../bitmaps/mouth.png" />&ndash;&gt;-->
-    <!--&lt;!&ndash;</drawable-list>&ndash;&gt;-->
-    <!--<drawables>-->
-        <!--<bitmap id="LauncherIcon" x="center" y="150" filename="launcher_icon.png" />-->
-    <!--</drawables>-->
-<!--</resources>-->
 <resources>
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
-    <bitmap id="GarminLogo" filename="garmin-logo.png" />
 </resources>

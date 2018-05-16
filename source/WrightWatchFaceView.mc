@@ -11,9 +11,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
     const MIN_24_HOUR_HOURS = 00;
-    var garminLogo;
     var hoursBucket;
-    var launcherIcon;
     var secondsLocX;
 
     function initialize() {
@@ -22,9 +20,6 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
 
     function onLayout(dc) {
         setLayout(Rez.Layouts.WatchFace(dc));
-
-        garminLogo = WatchUi.loadResource(Rez.Drawables.GarminLogo);
-        launcherIcon = WatchUi.loadResource(Rez.Drawables.LauncherIcon);
     }
 
     function onPartialUpdate(dc) {
@@ -38,15 +33,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         updateDate();
         updateBatteryPercentage();
 
-//        var mySmiley = new Rez.Drawables.LauncherIcon();
-//        mySmiley.draw(dc);
-//        var catgif = WatchUi.loadResource(Rez.Drawables.LauncherIcon);
-//        dc.drawBitmap(120, 175, launcherIcon);
-
         View.onUpdate(dc);
-
-        dc.drawBitmap(90, 215, garminLogo);
-//        dc.drawBitmap(90, 205, launcherIcon);
 
         secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
     }

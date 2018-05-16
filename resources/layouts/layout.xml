@@ -1,5 +1,8 @@
-<layout id="WatchFace">
-    <label id="BatteryPercentage" x="center" y="0" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" />
-    <label id="DateLabel" x="center" y="75" font="Gfx.FONT_XTINY" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_WHITE" />
-    <label id="TimeLabel" x="center" y="center" font="Gfx.FONT_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_WHITE" />
-</layout>
+<resources>
+    <layout id="WatchFace">
+        <label id="BatteryPercentage" x="center" y="0" font="Gfx.FONT_LARGE" justification="Gfx.TEXT_JUSTIFY_CENTER" />
+        <label id="DateLabel" x="center" y="75" font="Gfx.FONT_XTINY" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_WHITE" />
+        <label id="TimeLabel" x="center" y="center" font="Gfx.FONT_NUMBER_MILD" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_WHITE" />
+        <bitmap id="GarminLogo" filename="../drawables/garmin-logo.png" x="center" y="215" />
+    </layout>
+</resources>
