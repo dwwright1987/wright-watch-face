@@ -11,6 +11,9 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     const PM_HOURS_BUCKET = "PM";
     const MAX_12_HOUR_HOURS = 12;
     const MIN_24_HOUR_HOURS = 00;
+    var bluetoothConnectedDrawable;
+    var bluetoothDisconnectedDrawable;
+    var currentBluetoothDrawable;
     var hoursBucket;
     var secondsLocX;
 
@@ -19,11 +22,15 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     }
 
     function onLayout(dc) {
+        bluetoothDisconnectedDrawable = WatchUi.loadResource(Rez.Drawables.BluetoothDisconnected);
+        bluetoothConnectedDrawable = WatchUi.loadResource(Rez.Drawables.BluetoothConnected);
+
         setLayout(Rez.Layouts.WatchFace(dc));
     }
 
     function onPartialUpdate(dc) {
         updateSeconds(dc);
+        updateBluetoothDrawable(dc, false);
     }
 
     function onUpdate(dc) {
@@ -34,6 +41,8 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         updateBatteryPercentage();
 
         View.onUpdate(dc);
+
+        updateBluetoothDrawable(dc, true);
 
         secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
     }
@@ -105,6 +114,22 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
             batteryPercentageDrawable.setColor(Gfx.COLOR_YELLOW);
         } else {
             batteryPercentageDrawable.setColor(Gfx.COLOR_GREEN);
+        }
+    }
+
+    function updateBluetoothDrawable(dc, forceDraw) {
+        var bluetoothDrawable;
+        if (System.getDeviceSettings().phoneConnected) {
+            bluetoothDrawable = bluetoothConnectedDrawable;
+        } else {
+            bluetoothDrawable = bluetoothDisconnectedDrawable;
+        }
+
+        if (bluetoothDrawable != currentBluetoothDrawable || forceDraw) {
+            dc.clearClip();
+            dc.drawBitmap(112, 180, bluetoothDrawable);
+
+            currentBluetoothDrawable = bluetoothDrawable;
         }
     }
 
