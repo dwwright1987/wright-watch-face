@@ -1,4 +1,4 @@
-using Toybox.Graphics as Gfx;
+using Toybox.Graphics;
 using Toybox.Math;
 using Toybox.Lang;
 using Toybox.System;
@@ -15,6 +15,8 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     var bluetoothDisconnectedDrawable;
     var currentBluetoothDrawable;
     var hoursBucket;
+    var messageDrawable;
+    var messageDrawableDrawn = false;
     var secondsLocX;
 
     function initialize() {
@@ -24,6 +26,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     function onLayout(dc) {
         bluetoothDisconnectedDrawable = WatchUi.loadResource(Rez.Drawables.BluetoothDisconnected);
         bluetoothConnectedDrawable = WatchUi.loadResource(Rez.Drawables.BluetoothConnected);
+        messageDrawable = WatchUi.loadResource(Rez.Drawables.Message);
 
         setLayout(Rez.Layouts.WatchFace(dc));
     }
@@ -31,6 +34,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     function onPartialUpdate(dc) {
         updateSeconds(dc);
         updateBluetoothDrawable(dc, false);
+        updateMessageDrawable(dc, false);
     }
 
     function onUpdate(dc) {
@@ -43,6 +47,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         View.onUpdate(dc);
 
         updateBluetoothDrawable(dc, true);
+        updateMessageDrawable(dc, true);
 
         secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
     }
@@ -109,11 +114,11 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         batteryPercentageDrawable.setText(batteryPercentage);
 
         if (battery <= 15) {
-            batteryPercentageDrawable.setColor(Gfx.COLOR_RED);
+            batteryPercentageDrawable.setColor(Graphics.COLOR_RED);
         } else if (battery <= 30) {
-            batteryPercentageDrawable.setColor(Gfx.COLOR_YELLOW);
+            batteryPercentageDrawable.setColor(Graphics.COLOR_YELLOW);
         } else {
-            batteryPercentageDrawable.setColor(Gfx.COLOR_GREEN);
+            batteryPercentageDrawable.setColor(Graphics.COLOR_GREEN);
         }
     }
 
@@ -133,6 +138,24 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         }
     }
 
+    function updateMessageDrawable(dc, forceDraw) {
+        var locX = 150;
+        var locY = 180;
+
+        if (System.getDeviceSettings().notificationCount > 0 && (!messageDrawableDrawn || forceDraw)) {
+            dc.clearClip();
+            dc.drawBitmap(locX, locY, messageDrawable);
+
+            messageDrawableDrawn = true;
+        } else if (System.getDeviceSettings().notificationCount == 0 && messageDrawableDrawn) {
+            dc.clearClip();
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+            dc.fillRectangle(locX, locY, messageDrawable.getWidth(), messageDrawable.getHeight());
+
+            messageDrawableDrawn = false;
+        }
+    }
+
     function updateSeconds(dc) {
         var textLocationX = secondsLocX;
         var textLocationY = 101;
@@ -143,9 +166,9 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         var clipY = textLocationY;
 
         dc.setClip(clipX, clipY, clipWidth, clipHeight);
-        dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_BLACK);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
         var second = System.getClockTime().sec.format("%02d");
-        dc.drawText(textLocationX, textLocationY, Gfx.FONT_NUMBER_MILD, second, Gfx.TEXT_JUSTIFY_CENTER);
+        dc.drawText(textLocationX, textLocationY, Graphics.FONT_NUMBER_MILD, second, Graphics.TEXT_JUSTIFY_CENTER);
     }
 }
