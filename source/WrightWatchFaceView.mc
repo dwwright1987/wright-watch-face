@@ -18,6 +18,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     var messageDrawable;
     var messageDrawableDrawn = false;
     var secondsLocX;
+    var timeLabelLocY = 101;
 
     function initialize() {
         WatchFace.initialize();
@@ -39,10 +40,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
 
     function onUpdate(dc) {
         dc.clearClip();
-//        View.onUpdate(dc);
 
-//        var timeLabel = buildTimeLabel();
-//        var timeLabelDrawable = updateTimeLabelDrawable(dc, timeLabel);
         updateDate();
         updateBatteryPercentage();
 
@@ -54,9 +52,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         updateBluetoothDrawable(dc, true);
         updateMessageDrawable(dc, true);
 
-        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, timeLabel, hoursBucket);
-
-        System.println("secondsLocX = " + secondsLocX);
+        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
     }
 
     function buildTimeLabel() {
@@ -88,37 +84,24 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         }
 
         return timeLabel;
-
-//        var timeLabelDrawable = View.findDrawableById("TimeLabel");
-//        timeLabelDrawable.setText(time);
-//
-//        return timeLabelDrawable;
     }
 
     function updateTimeLabelDrawable(dc, timeLabel) {
-//        var existingTimeLabelDrawable = View.findDrawableById("TimeLabel");
-
         var timeLabelDrawable = new WatchUi.Text({
             :text=>timeLabel,
             :color=>Graphics.COLOR_WHITE,
             :font=>Graphics.FONT_NUMBER_MILD,
             :justification=>Graphics.TEXT_JUSTIFY_CENTER,
             :locX=>dc.getWidth() / 2,
-            :locY=>101,
+            :locY=>timeLabelLocY,
             :identifier=>"TimeLabel"
         });
         timeLabelDrawable.draw(dc);
 
-//        timeLabelDrawable.setText(timeLabel);
-
         return timeLabelDrawable;
     }
 
-    function calculateSecondsLocationX(timeLabelDrawable, timeLabel, hoursBucket) {
-        System.println("timeLabelDrawable.locX = " + timeLabelDrawable.locX);
-        System.println("timeLabelDrawable.width = " + timeLabelDrawable.width);
-        System.println("hoursBucket = " + hoursBucket);
-        System.println("time.length = " + timeLabel.length());
+    function calculateSecondsLocationX(timeLabelDrawable, hoursBucket) {
         var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
         if (hoursBucket == PM_HOURS_BUCKET) {
             secondsLococationX -= 70;
@@ -190,7 +173,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
 
     function updateSeconds(dc) {
         var textLocationX = secondsLocX;
-        var textLocationY = 101;
+        var textLocationY = timeLabelLocY;
 
         var clipHeight = 35;
         var clipWidth = 35;
