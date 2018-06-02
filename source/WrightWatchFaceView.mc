@@ -39,20 +39,27 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
 
     function onUpdate(dc) {
         dc.clearClip();
+//        View.onUpdate(dc);
 
-        var timeLabelDrawable = updateTime();
+//        var timeLabel = buildTimeLabel();
+//        var timeLabelDrawable = updateTimeLabelDrawable(dc, timeLabel);
         updateDate();
         updateBatteryPercentage();
 
         View.onUpdate(dc);
 
+        var timeLabel = buildTimeLabel();
+        var timeLabelDrawable = updateTimeLabelDrawable(dc, timeLabel);
+
         updateBluetoothDrawable(dc, true);
         updateMessageDrawable(dc, true);
 
-        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, hoursBucket);
+        secondsLocX = calculateSecondsLocationX(timeLabelDrawable, timeLabel, hoursBucket);
+
+        System.println("secondsLocX = " + secondsLocX);
     }
 
-    function updateTime() {
+    function buildTimeLabel() {
         var clockTime = System.getClockTime();
         var is24Hour = System.getDeviceSettings().is24Hour;
 
@@ -75,18 +82,43 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         var minute = clockTime.min.format("%02d");
         var seconds = clockTime.sec.format("%02d");
 
-        var time = Lang.format("$1$:$2$:$3$", [hour, minute, seconds]);
+        var timeLabel = Lang.format("$1$:$2$:$3$", [hour, minute, seconds]);
         if (!is24Hour) {
-            time = Lang.format("$1$ $2$", [time, hoursBucket]);
+            timeLabel = Lang.format("$1$ $2$", [timeLabel, hoursBucket]);
         }
 
-        var timeLabelDrawable = View.findDrawableById("TimeLabel");
-        timeLabelDrawable.setText(time);
+        return timeLabel;
+
+//        var timeLabelDrawable = View.findDrawableById("TimeLabel");
+//        timeLabelDrawable.setText(time);
+//
+//        return timeLabelDrawable;
+    }
+
+    function updateTimeLabelDrawable(dc, timeLabel) {
+//        var existingTimeLabelDrawable = View.findDrawableById("TimeLabel");
+
+        var timeLabelDrawable = new WatchUi.Text({
+            :text=>timeLabel,
+            :color=>Graphics.COLOR_WHITE,
+            :font=>Graphics.FONT_NUMBER_MILD,
+            :justification=>Graphics.TEXT_JUSTIFY_CENTER,
+            :locX=>dc.getWidth() / 2,
+            :locY=>101,
+            :identifier=>"TimeLabel"
+        });
+        timeLabelDrawable.draw(dc);
+
+//        timeLabelDrawable.setText(timeLabel);
 
         return timeLabelDrawable;
     }
 
-    function calculateSecondsLocationX(timeLabelDrawable, hoursBucket) {
+    function calculateSecondsLocationX(timeLabelDrawable, timeLabel, hoursBucket) {
+        System.println("timeLabelDrawable.locX = " + timeLabelDrawable.locX);
+        System.println("timeLabelDrawable.width = " + timeLabelDrawable.width);
+        System.println("hoursBucket = " + hoursBucket);
+        System.println("time.length = " + timeLabel.length());
         var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
         if (hoursBucket == PM_HOURS_BUCKET) {
             secondsLococationX -= 70;
