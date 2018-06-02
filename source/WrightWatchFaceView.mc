@@ -146,8 +146,13 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         }
 
         if (bluetoothDrawable != currentBluetoothDrawable || forceDraw) {
+            var locX = 112;
+            var locY = 180;
+
             dc.clearClip();
-            dc.drawBitmap(112, 180, bluetoothDrawable);
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+            dc.fillRectangle(locX, locY, bluetoothDrawable.getWidth(), bluetoothDrawable.getHeight());
+            dc.drawBitmap(locX, locY, bluetoothDrawable);
 
             currentBluetoothDrawable = bluetoothDrawable;
         }
