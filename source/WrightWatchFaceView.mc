@@ -105,8 +105,10 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
         if (hoursBucket == PM_HOURS_BUCKET) {
             secondsLococationX -= 70;
-        } else {
+        } else if (hoursBucket == AM_HOURS_BUCKET) {
             secondsLococationX -= 72;
+        } else {
+            secondsLococationX -= 17;
         }
 
         return secondsLococationX;
