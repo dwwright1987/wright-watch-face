@@ -19,6 +19,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     var messageDrawableDrawn = false;
     var secondsLocX;
     var timeLabelLocY = 101;
+    var timeLabelFont = Graphics.FONT_SYSTEM_LARGE;
 
     function initialize() {
         WatchFace.initialize();
@@ -90,7 +91,7 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         var timeLabelDrawable = new WatchUi.Text({
             :text=>timeLabel,
             :color=>Graphics.COLOR_WHITE,
-            :font=>Graphics.FONT_NUMBER_MILD,
+            :font=>timeLabelFont,
             :justification=>Graphics.TEXT_JUSTIFY_CENTER,
             :locX=>dc.getWidth() / 2,
             :locY=>timeLabelLocY,
@@ -104,11 +105,11 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
     function calculateSecondsLocationX(timeLabelDrawable, hoursBucket) {
         var secondsLococationX = timeLabelDrawable.locX + Math.round(timeLabelDrawable.width / 2.0);
         if (hoursBucket == PM_HOURS_BUCKET) {
-            secondsLococationX -= 70;
+            secondsLococationX -= 60;
         } else if (hoursBucket == AM_HOURS_BUCKET) {
-            secondsLococationX -= 72;
+            secondsLococationX -= 61;
         } else {
-            secondsLococationX -= 17;
+            secondsLococationX -= 14;
         }
 
         return secondsLococationX;
@@ -191,6 +192,6 @@ class WrightWatchFaceView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
         var second = System.getClockTime().sec.format("%02d");
-        dc.drawText(textLocationX, textLocationY, Graphics.FONT_NUMBER_MILD, second, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(textLocationX, textLocationY, timeLabelFont, second, Graphics.TEXT_JUSTIFY_CENTER);
     }
 }
